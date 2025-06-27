@@ -177,9 +177,7 @@ public final class MapReduce {
         }
     }
 
-    /**
-     * Implementación específica del Reducer para Índice Invertido
-     */
+
     public static class InvertedIndexReducer implements Reducer<String, Integer, Set<Integer>> {
         private static final long serialVersionUID = 1L;
 
@@ -191,14 +189,10 @@ public final class MapReduce {
         }
     }
 
-    /**
-     * Clase principal para demostrar el Índice Invertido con Spark
-     */
+
     public static class InvertedIndexDemo {
 
-        /**
-         * Muestra información del archivo procesado
-         */
+
         public static void showFileInfo(String filename, Map<String, Set<Integer>> index) {
             File file = new File(filename);
             if (file.exists()) {
@@ -254,42 +248,6 @@ public final class MapReduce {
         }
 
         /**
-         * Analiza y muestra las palabras más encontradas
-         */
-        public static void analyzeWordFrequency(Map<String, Set<Integer>> index) {
-            System.out.println("\n=== ANÁLISIS DE PALABRAS MÁS ENCONTRADAS (SPARK) ===");
-
-            // Crear lista de palabras ordenadas por frecuencia
-            List<Map.Entry<String, Set<Integer>>> wordsByFrequency = new ArrayList<>(index.entrySet());
-            wordsByFrequency.sort((a, b) -> Integer.compare(b.getValue().size(), a.getValue().size()));
-
-            System.out.println("Top 15 palabras más encontradas:");
-            for (int i = 0; i < Math.min(15, wordsByFrequency.size()); i++) {
-                Map.Entry<String, Set<Integer>> entry = wordsByFrequency.get(i);
-                String word = entry.getKey();
-                int frequency = entry.getValue().size();
-                Set<Integer> lines = entry.getValue();
-
-                // Para palabras muy frecuentes, mostrar solo algunos números de línea
-                String lineDisplay = lines.size() > 10 ?
-                        "[" + lines.stream().limit(5).map(String::valueOf).reduce((a,b) -> a + ", " + b).orElse("") + ", ...]" :
-                        lines.toString();
-
-                System.out.println((i + 1) + ". " + word + " - Aparece en " + frequency +
-                        " línea(s): " + lineDisplay);
-            }
-
-            // Estadísticas generales
-            int totalWords = index.size();
-            int totalOccurrences = index.values().stream().mapToInt(Set::size).sum();
-            double avgOccurrences = (double) totalOccurrences / totalWords;
-
-            System.out.println("\nEstadísticas del procesamiento distribuido:");
-            System.out.println("- Total de palabras únicas: " + totalWords);
-            System.out.println("- Total de ocurrencias: " + totalOccurrences);
-            System.out.println("- Promedio de ocurrencias por palabra: " + String.format("%.2f", avgOccurrences));
-            System.out.println("- Procesado usando Apache Spark RDDs distribuidos");
-        }
 
         /**
          * Función que permite leer un archivo y contar su cantidad de línea
@@ -371,7 +329,6 @@ public final class MapReduce {
         InvertedIndexDemo.displayWordVariables(invertedIndex);
 
         // Analizar cuáles fueron las palabras más encontradas
-        InvertedIndexDemo.analyzeWordFrequency(invertedIndex);
 
         System.out.println("\n=== PROCESAMIENTO COMPLETADO CON APACHE SPARK ===");
     }

@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'cl.ucn.disc.bigdata'
+version = '1.0-SNAPSHOT'
+
+// Configuración específica para JDK 21
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // JUnit Jupiter para testing
+    testImplementation platform('org.junit:junit-bom:5.12.2')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // Apache Spark - compatible con JDK 21
+    implementation 'org.apache.spark:spark-core_2.12:3.5.1'
+    implementation 'org.apache.spark:spark-sql_2.12:3.5.1'
+
+    // Lombok para anotaciones
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Configuración de la aplicación principal
+application {
+    mainClass = 'cl.ucn.disc.bigdata.spark.SparkSingleton'
+}
+
+// Configuraciones JVM para todas las tareas Java
+tasks.withType(JavaExec) {
+    jvmArgs = [
+            '--add-exports=java.base/sun.nio.ch=ALL-UNNAMED',
+            '--add-opens=java.base/java.lang=ALL-UNNAMED',
+            '--add-opens=java.base/java.lang.invoke=ALL-UNNAMED',
+            '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
+            '--add-opens=java.base/java.io=ALL-UNNAMED',
+            '--add-opens=java.base/java.net=ALL-UNNAMED',
+            '--add-opens=java.base/java.nio=ALL-UNNAMED',
+            '--add-opens=java.base/java.util=ALL-UNNAMED',
+            '--add-opens=java.base/java.util.concurrent=ALL-UNNAMED',
+            '--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED',
+            '--add-opens=java.base/sun.nio.cs=ALL-UNNAMED',
+            '--add-opens=java.base/sun.security.action=ALL-UNNAMED',
+            '--add-opens=java.base/sun.util.calendar=ALL-UNNAMED',
+            '-Xmx4g'
+    ]
+}
